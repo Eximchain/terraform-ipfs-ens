@@ -2,9 +2,45 @@
 # REQUIRED VARIABLES
 # --------------------------------------------------------
 
+variable "github_client_id" {
+  description = "Client ID for GitHub OAuth app; publicly visible"
+  // TODO: Remove default once we have a value
+  default = ""
+}
+
+variable "github_client_secret" {
+  description = "Client secret for GitHub OAuth app; secret, server-only"
+  // TODO: Remove default once we have a value
+  default = ""
+}
+
 variable "eth_key" {
   description = "Private key for the ETH account which deploys to ENS"
-  // TODO remove and make required
+  // TODO: remove default and make required
+  default = ""
+}
+
+variable "ipfs_endpoint" {
+  description = "Endpoint for IPFS requests"
+  // TODO: Remove default once we have a value
+  default = ""
+}
+
+variable "ens_contract_address" {
+  description = "Address of ENS contract for registering names"
+  // TODO: Remove default once we have a value
+  default = ""
+}
+
+variable "ens_root_domain" {
+  description = "Our root domain which users register under"
+  // TODO: Remove default once we have a value
+  default = ""
+}
+
+variable "default_gas_price" {
+  description = "Default amount of gas per txn (2 per registration)"
+  // TODO: Remove default once we have a value
   default = ""
 }
 
