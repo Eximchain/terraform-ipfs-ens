@@ -359,11 +359,6 @@ resource "aws_codebuild_project" "ipfs_builder" {
 
   source {
     type      = "CODEPIPELINE"
-    // TODO
-    buildspec = templatefile("${path.module}/buildspec.yml",
-      {
-        todo_var = "TODO"
-      }
-    )
+    buildspec = file("${path.module}/buildspec.yml")
   }
 }

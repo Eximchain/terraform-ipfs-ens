@@ -5,9 +5,10 @@ phases:
       nodejs: 10
   build:
     commands:
-      - echo "${todo_var}"
+      - cd build
+      - zip -r ../ipfs-deployable.zip *
+      - cd ..
 artifacts:
   name: BUILD
-  base-directory: build
   files:
-    - '**/*'
+    - ipfs-deployable.zip
