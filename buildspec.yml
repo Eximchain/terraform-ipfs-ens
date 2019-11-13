@@ -5,6 +5,9 @@ phases:
       nodejs: 10
   build:
     commands:
+      # TODO: Check out repo
+      # TODO: cd Directory
+      # TODO: npm run build
       - cd build
       - zip -r ../ipfs-deployable.zip *
       - cd ..
