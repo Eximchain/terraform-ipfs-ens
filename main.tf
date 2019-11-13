@@ -50,6 +50,7 @@ terraform {
 # ---------------------------------------------------------------------------------------------------------------------
 # DATA SOURCES
 # ---------------------------------------------------------------------------------------------------------------------
+
   data "aws_caller_identity" "current" {
   }
 
@@ -126,7 +127,7 @@ terraform {
     s3_key           = aws_s3_bucket_object.default_function.key
     function_name    = "ipfs-ens-start-deploy-lambda-${var.subdomain}"
     role             = aws_iam_role.ipfs_ens_lambda_iam.arn
-    handler          = "index.startDeployHandler"
+    handler          = "index.deployStartHandler"
     source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
     runtime          = "nodejs10.x"
     timeout          = 10
@@ -155,7 +156,7 @@ terraform {
     s3_key           = aws_s3_bucket_object.default_function.key
     function_name    = "ipfs-deploy-lambda-${var.subdomain}"
     role             = aws_iam_role.ipfs_ens_lambda_iam.arn
-    handler          = "index.ipfsDeployHandler"
+    handler          = "index.deployIpfsHandler"
     source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
     runtime          = "nodejs10.x"
     timeout          = 10
@@ -184,7 +185,7 @@ terraform {
     s3_key           = aws_s3_bucket_object.default_function.key
     function_name    = "ens-deploy-lambda-${var.subdomain}"
     role             = aws_iam_role.ipfs_ens_lambda_iam.arn
-    handler          = "index.ensDeployHandler"
+    handler          = "index.deployEnsHandler"
     source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
     runtime          = "nodejs10.x"
     timeout          = 10
