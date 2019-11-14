@@ -274,7 +274,7 @@
         "sqs:SendMessage",
       ]
 
-      resources = [aws_sqs_queue.ipfs_ens.arn]
+      resources = [aws_sqs_queue.ens_deploy_queue.arn]
     }
   }
 
@@ -302,8 +302,8 @@
         "sqs:ChangeMessageVisibility",
       ]
       resources = [
-        aws_sqs_queue.ipfs_ens.arn,
-        aws_sqs_queue.ipfs_ens_deadletter.arn,
+        aws_sqs_queue.ens_deploy_queue.arn,
+        aws_sqs_queue.ens_deploy_queue_deadletter.arn,
       ]
     }
   }
@@ -343,7 +343,7 @@
       ]
       resources = [
         local.s3_artifact_bucket_arn_pattern,
-        aws_s3_bucket.pipeline_src_bucket.arn,
+        aws_s3_bucket.deploy_seed_bucket.arn,
       ]
     }
 
@@ -360,7 +360,7 @@
       ]
       resources = [
         "${local.s3_artifact_bucket_arn_pattern}/*",
-        "${aws_s3_bucket.pipeline_src_bucket.arn}/*"
+        "${aws_s3_bucket.deploy_seed_bucket.arn}/*"
       ]
     }
   }
@@ -464,8 +464,8 @@
       resources = [
         local.s3_artifact_bucket_arn_pattern,
         "${local.s3_artifact_bucket_arn_pattern}/*",
-        aws_s3_bucket.pipeline_src_bucket.arn,
-        "${aws_s3_bucket.pipeline_src_bucket.arn}/*",
+        aws_s3_bucket.deploy_seed_bucket.arn,
+        "${aws_s3_bucket.deploy_seed_bucket.arn}/*",
       ]
     }
 
@@ -545,8 +545,8 @@
       resources = [
         local.s3_artifact_bucket_arn_pattern,
         "${local.s3_artifact_bucket_arn_pattern}/*",
-        aws_s3_bucket.pipeline_src_bucket.arn,
-        "${aws_s3_bucket.pipeline_src_bucket.arn}/*",
+        aws_s3_bucket.deploy_seed_bucket.arn,
+        "${aws_s3_bucket.deploy_seed_bucket.arn}/*",
       ]
     }
   }

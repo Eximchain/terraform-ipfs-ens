@@ -62,8 +62,8 @@ terraform {
 # SHARED S3 BUCKETS & KEY
 # ---------------------------------------------------------------------------------------------------------------------
 
-  resource "aws_s3_bucket" "pipeline_src_bucket" {
-    bucket        = "ipfs-ens-pipeline-src-${var.subdomain}"
+  resource "aws_s3_bucket" "deploy_seed_bucket" {
+    bucket        = "ipfs-ens-deploy-seed-${var.subdomain}"
     acl           = "private"
     force_destroy = true
 
@@ -134,8 +134,14 @@ terraform {
 
     environment {
       variables = {
-        DDB_DEPLOYMENTS_TABLE = aws_dynamodb_table.deployments_table.id
-        SQS_QUEUE             = aws_sqs_queue.ipfs_ens.id
+        GITHUB_CLIENT_ID         = var.github_client_id
+        GITHUB_CLIENT_SECRET     = var.github_client_secret
+        DEPLOY_TABLE_NAME        = aws_dynamodb_table.deployments_table.id
+        DEPLOY_SEED_BUCKET       = aws_s3_bucket.deploy_seed_bucket.bucket
+        PIPELINE_ROLE_ARN        = aws_iam_role.ipfs_ens_codepipeline_iam.arn
+        CODEBUILD_BUILD_ID       = aws_codebuild_project.ipfs_builder.id
+        SERVICES_LAMBDA_FUNCTION = aws_lambda_function.ipfs_deploy_lambda.function_name
+        ENS_DEPLOY_QUEUE         = aws_sqs_queue.ens_deploy_queue.id
       }
     }
 
@@ -163,8 +169,11 @@ terraform {
 
     environment {
       variables = {
-        DDB_DEPLOYMENTS_TABLE = aws_dynamodb_table.deployments_table.id
-        SQS_QUEUE             = aws_sqs_queue.ipfs_ens.id
+        GITHUB_CLIENT_ID      = var.github_client_id
+        GITHUB_CLIENT_SECRET  = var.github_client_secret
+        IPFS_ENDPOINT         = var.ipfs_endpoint
+        DEPLOY_TABLE_NAME     = aws_dynamodb_table.deployments_table.id
+        ENS_DEPLOY_QUEUE      = aws_sqs_queue.ens_deploy_queue.id
       }
     }
 
@@ -192,8 +201,14 @@ terraform {
 
     environment {
       variables = {
-        DDB_DEPLOYMENTS_TABLE = aws_dynamodb_table.deployments_table.id
-        SQS_QUEUE             = aws_sqs_queue.ipfs_ens.id
+        GITHUB_CLIENT_ID      = var.github_client_id
+        GITHUB_CLIENT_SECRET  = var.github_client_secret
+        ETH_KEY               = var.eth_key
+        ENS_CONTRACT_ADDRESS  = var.ens_contract_address
+        ENS_ROOT_DOMAIN       = var.ens_root_domain
+        DEFAULT_GAS_PRICE     = var.default_gas_price
+        DEPLOY_TABLE_NAME     = aws_dynamodb_table.deployments_table.id
+        ENS_DEPLOY_QUEUE      = aws_sqs_queue.ens_deploy_queue.id
       }
     }
 
@@ -253,18 +268,18 @@ terraform {
 # ---------------------------------------------------------------------------------------------------------------------
 # SQS QUEUE
 # ---------------------------------------------------------------------------------------------------------------------
-  resource "aws_sqs_queue" "ipfs_ens" {
-    name                       = "ipfs-ens-queue-${var.subdomain}"
+  resource "aws_sqs_queue" "ens_deploy_queue" {
+    name                       = "ens-deploy-queue-${var.subdomain}"
     message_retention_seconds  = 3600
     visibility_timeout_seconds = 60
 
-    redrive_policy = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.ipfs_ens_deadletter.arn}\",\"maxReceiveCount\":3}"
+    redrive_policy = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.ens_deploy_queue_deadletter.arn}\",\"maxReceiveCount\":3}"
 
     tags = local.default_tags
   }
 
-  resource "aws_sqs_queue" "ipfs_ens_deadletter" {
-    name                       = "ipfs-ens-deadletter-${var.subdomain}"
+  resource "aws_sqs_queue" "ens_deploy_queue_deadletter" {
+    name                       = "ens-deploy-queue-deadletter-${var.subdomain}"
     message_retention_seconds  = 1209600
     visibility_timeout_seconds = 30
 
