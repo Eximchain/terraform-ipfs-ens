@@ -74,6 +74,14 @@ terraform {
     tags = local.default_tags
   }
 
+  resource "aws_s3_bucket" "artifact_bucket" {
+    bucket        = "ipfs-ens-artifacts-${var.subdomain}"
+    acl           = "private"
+    force_destroy = true
+
+    tags = local.default_tags
+  }
+
   resource "aws_s3_bucket" "lambda_deployment_packages" {
     bucket        = "ipfs-ens-lambda-packages-${var.subdomain}"
     acl           = "private"
@@ -137,6 +145,7 @@ terraform {
         GITHUB_CLIENT_ID         = var.github_client_id
         GITHUB_CLIENT_SECRET     = var.github_client_secret
         DEPLOY_TABLE_NAME        = aws_dynamodb_table.deployments_table.id
+        ARTIFACT_BUCKET          = aws_s3_bucket.artifact_bucket.bucket
         DEPLOY_SEED_BUCKET       = aws_s3_bucket.deploy_seed_bucket.bucket
         PIPELINE_ROLE_ARN        = aws_iam_role.ipfs_ens_codepipeline_iam.arn
         CODEBUILD_BUILD_ID       = aws_codebuild_project.ipfs_builder.id
