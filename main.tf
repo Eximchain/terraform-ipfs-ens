@@ -45,6 +45,7 @@ terraform {
 
     base_lambda_uri         = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions"
     start_deploy_lambda_uri = "${local.base_lambda_uri}/${aws_lambda_function.start_deploy_lambda.arn}/invocations"
+    token_fetch_lambda_uri = "${local.base_lambda_uri}/${aws_lambda_function.token_fetch_lambda.arn}/invocations"
   }
 
 # ---------------------------------------------------------------------------------------------------------------------
