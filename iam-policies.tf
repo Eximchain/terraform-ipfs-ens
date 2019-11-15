@@ -342,8 +342,7 @@
         "s3:PutObjectAcl",
       ]
       resources = [
-        local.s3_artifact_bucket_arn_pattern,
-        aws_s3_bucket.deploy_seed_bucket.arn,
+        local.s3_artifact_bucket_arn_pattern
       ]
     }
 
@@ -359,8 +358,7 @@
         "s3:ListObjects",
       ]
       resources = [
-        "${local.s3_artifact_bucket_arn_pattern}/*",
-        "${aws_s3_bucket.deploy_seed_bucket.arn}/*"
+        "${local.s3_artifact_bucket_arn_pattern}/*"
       ]
     }
   }
@@ -463,9 +461,7 @@
 
       resources = [
         local.s3_artifact_bucket_arn_pattern,
-        "${local.s3_artifact_bucket_arn_pattern}/*",
-        aws_s3_bucket.deploy_seed_bucket.arn,
-        "${aws_s3_bucket.deploy_seed_bucket.arn}/*",
+        "${local.s3_artifact_bucket_arn_pattern}/*"
       ]
     }
 
@@ -544,9 +540,7 @@
 
       resources = [
         local.s3_artifact_bucket_arn_pattern,
-        "${local.s3_artifact_bucket_arn_pattern}/*",
-        aws_s3_bucket.deploy_seed_bucket.arn,
-        "${aws_s3_bucket.deploy_seed_bucket.arn}/*",
+        "${local.s3_artifact_bucket_arn_pattern}/*"
       ]
     }
   }

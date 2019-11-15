@@ -62,18 +62,6 @@ terraform {
 # SHARED S3 BUCKETS & KEY
 # ---------------------------------------------------------------------------------------------------------------------
 
-  resource "aws_s3_bucket" "deploy_seed_bucket" {
-    bucket        = "ipfs-ens-deploy-seed-${var.subdomain}"
-    acl           = "private"
-    force_destroy = true
-
-    versioning {
-      enabled = true
-    }
-
-    tags = local.default_tags
-  }
-
   resource "aws_s3_bucket" "artifact_bucket" {
     bucket        = "ipfs-ens-artifacts-${var.subdomain}"
     acl           = "private"
@@ -146,7 +134,6 @@ terraform {
         GITHUB_CLIENT_SECRET     = var.github_client_secret
         DEPLOY_TABLE_NAME        = aws_dynamodb_table.deployments_table.id
         ARTIFACT_BUCKET          = aws_s3_bucket.artifact_bucket.bucket
-        DEPLOY_SEED_BUCKET       = aws_s3_bucket.deploy_seed_bucket.bucket
         PIPELINE_ROLE_ARN        = aws_iam_role.ipfs_ens_codepipeline_iam.arn
         CODEBUILD_BUILD_ID       = aws_codebuild_project.ipfs_builder.id
         SERVICES_LAMBDA_FUNCTION = aws_lambda_function.ipfs_deploy_lambda.function_name
