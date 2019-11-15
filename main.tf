@@ -111,7 +111,9 @@ terraform {
     deployment_target_lambdas = [
       aws_lambda_function.start_deploy_lambda.function_name,
       aws_lambda_function.ipfs_deploy_lambda.function_name,
-      aws_lambda_function.ens_deploy_lambda.function_name
+      aws_lambda_function.ens_deploy_lambda.function_name,
+      aws_lambda_function.token_fetch_lambda.function_name,
+      aws_lambda_function.token_check_lambda.function_name
     ]
 
     aws_region            = var.aws_region
@@ -205,6 +207,64 @@ terraform {
         DEFAULT_GAS_PRICE     = var.default_gas_price
         DEPLOY_TABLE_NAME     = aws_dynamodb_table.deployments_table.id
         ENS_DEPLOY_QUEUE      = aws_sqs_queue.ens_deploy_queue.id
+      }
+    }
+
+    depends_on = [null_resource.ipfs_ens_lambda_wait]
+
+    tags = local.default_tags
+
+    lifecycle {
+      ignore_changes = [
+        "source_code_hash",
+        "last_modified"
+      ]
+    }
+  }
+
+  resource "aws_lambda_function" "token_fetch_lambda" {
+    s3_bucket        = aws_s3_bucket.lambda_deployment_packages.bucket
+    s3_key           = aws_s3_bucket_object.default_function.key
+    function_name    = "token-fetch-lambda-${var.subdomain}"
+    role             = aws_iam_role.ipfs_ens_lambda_iam.arn
+    handler          = "index.tokenFetchHandler"
+    source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
+    runtime          = "nodejs10.x"
+    timeout          = 10
+
+    environment {
+      variables = {
+        GITHUB_CLIENT_ID      = var.github_client_id
+        GITHUB_CLIENT_SECRET  = var.github_client_secret
+      }
+    }
+
+    depends_on = [null_resource.ipfs_ens_lambda_wait]
+
+    tags = local.default_tags
+
+    lifecycle {
+      ignore_changes = [
+        "source_code_hash",
+        "last_modified"
+      ]
+    }
+  }
+
+  resource "aws_lambda_function" "token_check_lambda" {
+    s3_bucket        = aws_s3_bucket.lambda_deployment_packages.bucket
+    s3_key           = aws_s3_bucket_object.default_function.key
+    function_name    = "token-check-lambda-${var.subdomain}"
+    role             = aws_iam_role.ipfs_ens_lambda_iam.arn
+    handler          = "index.tokenCheckHandler"
+    source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
+    runtime          = "nodejs10.x"
+    timeout          = 10
+
+    environment {
+      variables = {
+        GITHUB_CLIENT_ID      = var.github_client_id
+        GITHUB_CLIENT_SECRET  = var.github_client_secret
       }
     }
 
