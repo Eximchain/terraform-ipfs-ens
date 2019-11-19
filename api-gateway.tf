@@ -302,7 +302,7 @@
     authorization = "NONE"
   }
 
-  resource "aws_api_gateway_method_response" "ipfs_ens_deployments_cors" {
+  resource "aws_api_gateway_method_response" "ipfs_ens_login_cors" {
     rest_api_id = aws_api_gateway_rest_api.ipfs_ens_api.id
     resource_id = aws_api_gateway_resource.ipfs_ens_login.id
     http_method = aws_api_gateway_method.ipfs_ens_login_cors.http_method
