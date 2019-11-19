@@ -254,6 +254,96 @@
   }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# DYNAMODB NONCE TABLE READ/WRITE ACCESS
+# ---------------------------------------------------------------------------------------------------------------------
+
+  resource "aws_iam_policy" "dynamodb_nonce_table_read_write" {
+    name = "dynamodb-nonce-table-read-write-${var.subdomain}"
+
+    policy = data.aws_iam_policy_document.dynamodb_nonce_table_read_write.json
+  }
+
+  data "aws_iam_policy_document" "dynamodb_nonce_table_read_write" {
+    version = "2012-10-17"
+
+    statement {
+      sid = "1"
+
+      effect = "Allow"
+
+      actions = [
+        "dynamodb:DescribeTable",
+      ]
+
+      resources = [aws_dynamodb_table.nonce_table.arn]
+    }
+
+    statement {
+      sid = "2"
+
+      effect = "Allow"
+
+      actions = [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:Query",
+      ]
+
+      resources = [
+        aws_dynamodb_table.nonce_table.arn,
+        "${aws_dynamodb_table.nonce_table.arn}/*",
+      ]
+    }
+  }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# DYNAMODB NONCE TABLE READ ONLY ACCESS
+# ---------------------------------------------------------------------------------------------------------------------
+
+  resource "aws_iam_policy" "dynamodb_nonce_table_read_only" {
+    name = "dynamodb-nonce-table-read-only-${var.subdomain}"
+
+    policy = data.aws_iam_policy_document.dynamodb_nonce_table_read_only.json
+  }
+
+  data "aws_iam_policy_document" "dynamodb_nonce_table_read_only" {
+    version = "2012-10-17"
+
+    statement {
+      sid = "1"
+
+      effect = "Allow"
+
+      actions = [
+        "dynamodb:DescribeTable",
+      ]
+
+      resources = [aws_dynamodb_table.nonce_table.arn]
+    }
+
+    statement {
+      sid = "2"
+
+      effect = "Allow"
+
+      actions = [
+        "dynamodb:BatchGetItem",
+        "dynamodb:GetItem",
+        "dynamodb:Query",
+      ]
+
+      resources = [
+        aws_dynamodb_table.nonce_table.arn,
+        "${aws_dynamodb_table.nonce_table.arn}/*",
+      ]
+    }
+  }
+
+# ---------------------------------------------------------------------------------------------------------------------
 # SQS SEND MESSAGES
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "sqs_send_message_ipfs_ens" {

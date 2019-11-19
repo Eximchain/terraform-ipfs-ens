@@ -16,12 +16,20 @@
   }
 
   # DynamoDB
-  resource "aws_iam_role_policy_attachment" "ipfs_ens_api_dynamodb" {
+  resource "aws_iam_role_policy_attachment" "ipfs_ens_api_dynamodb_deployments" {
     role       = aws_iam_role.ipfs_ens_lambda_iam.id
     policy_arn = aws_iam_policy.dynamodb_deployments_table_read_write.arn
   }
 
-  // TODO Create CodePipeline
+  resource "aws_iam_role_policy_attachment" "ipfs_ens_api_dynamodb_users" {
+    role       = aws_iam_role.ipfs_ens_lambda_iam.id
+    policy_arn = aws_iam_policy.dynamodb_users_table_read_write.arn
+  }
+
+  resource "aws_iam_role_policy_attachment" "ipfs_ens_api_dynamodb_nonce" {
+    role       = aws_iam_role.ipfs_ens_lambda_iam.id
+    policy_arn = aws_iam_policy.dynamodb_nonce_table_read_write.arn
+  }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # CODEPIPELINE IAM ROLE

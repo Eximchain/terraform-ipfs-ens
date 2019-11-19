@@ -207,6 +207,7 @@ terraform {
         ENS_ROOT_DOMAIN       = var.ens_root_domain
         DEFAULT_GAS_PRICE     = var.default_gas_price
         DEPLOY_TABLE_NAME     = aws_dynamodb_table.deployments_table.id
+        NONCE_TABLE_NAME      = aws_dynamodb_table.nonce_table.name
         ENS_DEPLOY_QUEUE      = aws_sqs_queue.ens_deploy_queue.id
       }
     }
@@ -321,6 +322,29 @@ terraform {
 
     tags = local.default_tags
   }
+
+  resource "aws_dynamodb_table" "nonce_table" {
+    name         = "ipfs-ens-nonce-${var.subdomain}"
+    billing_mode = "PAY_PER_REQUEST"
+    hash_key     = "Chain"
+
+    attribute {
+      name = "Chain"
+      type = "S"
+    }
+
+    tags = local.default_tags
+  }
+
+  resource "aws_dynamodb_table_item" "current_nonce" {
+    table_name = "${aws_dynamodb_table.nonce_table.name}"
+    hash_key   = "${aws_dynamodb_table.nonce_table.hash_key}"
+
+    item = jsonencode({
+        "Chain"={"S"="ETHEREUM"}
+        "NextNonce"={"N"="0"}
+      })
+    }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # SQS QUEUE
