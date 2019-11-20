@@ -44,6 +44,18 @@ variable "default_gas_price" {
   default = ""
 }
 
+variable "npm_user" {
+  description = "Username for the NPM account which the builder should log into before installing dependencies."
+}
+
+variable "npm_pass" {
+  description = "Password for the NPM account which the builder should log into before installing dependencies."
+}
+
+variable "npm_email" {
+  description = "Email for the NPM account which the builder should log into before installing dependencies."
+}
+
 # --------------------------------------------------------
 # OPTIONAL VARIABLES
 # --------------------------------------------------------

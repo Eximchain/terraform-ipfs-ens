@@ -117,6 +117,10 @@ terraform {
       aws_lambda_function.token_check_lambda.function_name
     ]
 
+    npm_user  = var.npm_user
+    npm_pass  = var.npm_pass
+    npm_email = var.npm_email
+
     aws_region            = var.aws_region
     force_destroy_buckets = true
   }
@@ -387,6 +391,10 @@ terraform {
     build_command         = "npm install && npm run build"
 
     force_destroy_buckets = true
+
+    npm_user  = var.npm_user
+    npm_pass  = var.npm_pass
+    npm_email = var.npm_email
 
     env = {
       REACT_APP_IPFS_ENS_API_URL          = "https://${local.api_domain}"
