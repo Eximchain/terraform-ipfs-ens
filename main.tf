@@ -341,7 +341,7 @@ terraform {
     hash_key   = "${aws_dynamodb_table.nonce_table.hash_key}"
 
     item = jsonencode({
-        "Chain"={"S"="ETHEREUM"}
+        "Chain"={"S"="Ethereum"}
         "NextNonce"={"N"="0"}
       })
     }
