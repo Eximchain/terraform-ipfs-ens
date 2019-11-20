@@ -97,3 +97,10 @@ variable "segment_browser_write_key" {
   description = "Publishable key to send analytics calls to Segment.io from the browser.  Must be set in order to get usage analytics."
   default     = ""
 }
+
+variable "initial_nonces" {
+    description = "Mapping from chain name to initial nonce.  Should be set if the key has been used before."
+    default     = {
+        Ethereum = "0"
+    }
+}

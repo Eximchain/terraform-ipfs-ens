@@ -342,7 +342,7 @@ terraform {
 
     item = jsonencode({
         "Chain"={"S"="Ethereum"}
-        "NextNonce"={"N"="0"}
+        "NextNonce"={"N"=lookup(var.initial_nonces, "Ethereum")}
       })
     }
 
