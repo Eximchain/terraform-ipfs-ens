@@ -735,3 +735,13 @@
     # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
     source_arn = local.api_gateway_source_arn
   }
+
+  resource "aws_lambda_permission" "api_gateway_invoke_token_fetch_lambda" {
+    statement_id  = "AllowExecutionFromAPIGateway"
+    action        = "lambda:InvokeFunction"
+    function_name = aws_lambda_function.token_fetch_lambda.function_name
+    principal     = "apigateway.amazonaws.com"
+
+    # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
+    source_arn = local.api_gateway_source_arn
+  }
