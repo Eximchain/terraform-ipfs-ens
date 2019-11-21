@@ -292,22 +292,22 @@ terraform {
   resource "aws_dynamodb_table" "deployments_table" {
     name         = "ipfs-ens-deployments-${var.subdomain}"
     billing_mode = "PAY_PER_REQUEST"
-    hash_key     = "EnsDomain"
+    hash_key     = "EnsName"
 
     global_secondary_index {
-      name     = "OwnerEmailIndex"
-      hash_key = "OwnerEmail"
+      name     = "UsernameIndex"
+      hash_key = "Username"
 
       projection_type = "ALL"
     }
 
     attribute {
-      name = "EnsDomain"
+      name = "EnsName"
       type = "S"
     }
 
     attribute {
-      name = "OwnerEmail"
+      name = "Username"
       type = "S"
     }
 
