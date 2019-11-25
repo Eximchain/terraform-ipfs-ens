@@ -33,7 +33,7 @@
     version = "2012-10-17"
 
     statement {
-      sid = "1"
+      sid = "AllowLambdaAssume"
 
       effect = "Allow"
 
@@ -41,6 +41,18 @@
       principals {
         type        = "Service"
         identifiers = ["lambda.amazonaws.com"]
+      }
+    }
+
+    statement {
+      sid = "AllowAPIGatewayAssume"
+
+      effect = "Allow"
+
+      actions = ["sts:AssumeRole"]
+      principals {
+        type  = "Service"
+        identifiers = ["apigateway.amazonaws.com"]
       }
     }
   }
