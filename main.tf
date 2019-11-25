@@ -98,7 +98,7 @@ terraform {
   }
 
   module "dappbot_ipfs_ens_lambda_pipeline" {
-    source = "git@github.com:Eximchain/terraform-aws-lambda-cd-pipeline.git?ref=use-al2-codebuild"
+    source = "git@github.com:Eximchain/terraform-aws-lambda-cd-pipeline.git"
 
     id = "ipfs-ens-lambda-${var.subdomain}"
 
