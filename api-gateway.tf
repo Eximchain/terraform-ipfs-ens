@@ -14,7 +14,7 @@
     name = "ipfs_ens_github_auth"
     rest_api_id = aws_api_gateway_rest_api.ipfs_ens_api.id
     authorizer_uri = aws_lambda_function.token_check_lambda.invoke_arn
-    authorizer_credentials = aws_iam_role.ipfs_ens_lambda_iam.arn
+    authorizer_credentials = aws_iam_role.ipfs_ens_gateway_authorizer.arn
   }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -82,7 +82,8 @@
     authorizer_id = aws_api_gateway_authorizer.ipfs_ens_github_auth.id
 
     request_parameters = {
-      "method.request.path.proxy" = true
+      "method.request.path.proxy" = true,
+      "method.request.header.Authorization" = true
     }
   }
 
@@ -757,14 +758,3 @@
     # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
     source_arn = local.api_gateway_source_arn
   }
-
-  resource "aws_lambda_permission" "api_gateway_invoke_token_check_lambda" {
-    statement_id  = "AllowExecutionFromAPIGateway"
-    action        = "lambda:InvokeFunction"
-    function_name = aws_lambda_function.token_check_lambda.function_name
-    principal     = "apigateway.amazonaws.com"
-
-    # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-    source_arn = local.api_gateway_source_arn
-  }
-
