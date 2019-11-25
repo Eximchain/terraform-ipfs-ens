@@ -401,7 +401,6 @@ terraform {
       REACT_APP_WEB3_URL                  = "https://gamma-tx-executor-us-east.eximchain-dev.com"
       REACT_APP_SEGMENT_BROWSER_WRITE_KEY = var.segment_browser_write_key
       REACT_APP_OAUTH_CLIENT_ID           = var.github_client_id
-      REACT_APP_OAUTH_CLIENT_SECRET       = var.github_client_secret
     }
   }
 
