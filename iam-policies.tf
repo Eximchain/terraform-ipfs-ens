@@ -127,8 +127,7 @@
         "dynamodb:GetItem",
         "dynamodb:PutItem",
         "dynamodb:UpdateItem",
-        "dynamodb:Query",
-        "dynamodb:Scan"
+        "dynamodb:Query"
       ]
 
       resources = [
@@ -171,8 +170,7 @@
       actions = [
         "dynamodb:BatchGetItem",
         "dynamodb:GetItem",
-        "dynamodb:Query",
-        "dynamodb:Scan"
+        "dynamodb:Query"
       ]
 
       resources = [
