@@ -11,9 +11,9 @@
 # API GATEWAY CUSTOM AUTHORIZER
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_api_gateway_authorizer" "ipfs_ens_github_auth" {
-    name = "ipfs_ens_github_auth"
-    rest_api_id = aws_api_gateway_rest_api.ipfs_ens_api.id
-    authorizer_uri = aws_lambda_function.token_check_lambda.invoke_arn
+    name                   = "ipfs-ens-github-auth"
+    rest_api_id            = aws_api_gateway_rest_api.ipfs_ens_api.id
+    authorizer_uri         = aws_lambda_function.token_check_lambda.invoke_arn
     authorizer_credentials = aws_iam_role.ipfs_ens_gateway_authorizer.arn
   }
 
@@ -24,7 +24,7 @@
   resource "aws_api_gateway_resource" "ipfs_ens_deployments" {
     rest_api_id = aws_api_gateway_rest_api.ipfs_ens_api.id
     parent_id   = aws_api_gateway_rest_api.ipfs_ens_api.root_resource_id
-    path_part   = "deployment"
+    path_part   = "deployments"
   }
 
   resource "aws_api_gateway_method" "ipfs_ens_deployments_get" {
