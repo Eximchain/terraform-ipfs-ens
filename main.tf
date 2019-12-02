@@ -324,22 +324,22 @@ terraform {
   resource "aws_dynamodb_table" "deployments_table" {
     name         = "ipfs-ens-deployments-${var.subdomain}"
     billing_mode = "PAY_PER_REQUEST"
-    hash_key     = "EnsDomain"
+    hash_key     = "EnsName"
 
     global_secondary_index {
-      name     = "OwnerEmailIndex"
-      hash_key = "OwnerEmail"
+      name     = "UsernameIndex"
+      hash_key = "Username"
 
       projection_type = "ALL"
     }
 
     attribute {
-      name = "EnsDomain"
+      name = "EnsName"
       type = "S"
     }
 
     attribute {
-      name = "OwnerEmail"
+      name = "Username"
       type = "S"
     }
 
@@ -432,6 +432,7 @@ terraform {
       REACT_APP_IPFS_ENS_API_URL          = "https://${local.api_domain}"
       REACT_APP_WEB3_URL                  = "https://gamma-tx-executor-us-east.eximchain-dev.com"
       REACT_APP_SEGMENT_BROWSER_WRITE_KEY = var.segment_browser_write_key
+      REACT_APP_OAUTH_CLIENT_ID           = var.github_client_id
     }
   }
 
@@ -477,24 +478,24 @@ terraform {
 # ---------------------------------------------------------------------------------------------------------------------
 # CODEBUILD PROJECT
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_codebuild_project" "ipfs_builder" {
-  name          = "ipfs-builder-${var.subdomain}"
-  build_timeout = 10
-  service_role  = aws_iam_role.ipfs_ens_codepipeline_iam.arn
+  resource "aws_codebuild_project" "ipfs_builder" {
+    name          = "ipfs-builder-${var.subdomain}"
+    build_timeout = 10
+    service_role  = aws_iam_role.ipfs_ens_codepipeline_iam.arn
 
-  environment {
-    type         = "LINUX_CONTAINER"
-    compute_type = "BUILD_GENERAL1_SMALL"
-    image        = "aws/codebuild/standard:2.0"
-  }
+    environment {
+      type         = "LINUX_CONTAINER"
+      compute_type = "BUILD_GENERAL1_SMALL"
+      image        = "aws/codebuild/standard:2.0"
+    }
 
-  artifacts {
-    type                = "CODEPIPELINE"
-    encryption_disabled = true
-  }
+    artifacts {
+      type                = "CODEPIPELINE"
+      encryption_disabled = true
+    }
 
-  source {
-    type      = "CODEPIPELINE"
-    buildspec = file("${path.module}/buildspec.yml")
+    source {
+      type      = "CODEPIPELINE"
+      buildspec = file("${path.module}/buildspec.yml")
+    }
   }
-}

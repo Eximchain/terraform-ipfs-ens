@@ -33,7 +33,7 @@
     version = "2012-10-17"
 
     statement {
-      sid = "1"
+      sid = "AllowLambdaAssume"
 
       effect = "Allow"
 
@@ -43,6 +43,7 @@
         identifiers = ["lambda.amazonaws.com"]
       }
     }
+
   }
 
   data "aws_iam_policy_document" "codepipeline_assume_role" {
@@ -69,6 +70,22 @@
       principals {
         type        = "Service"
         identifiers = ["codebuild.amazonaws.com"]
+      }
+    }
+  }
+
+  data "aws_iam_policy_document" "api_gateway_assume_role" {
+    version = "2012-10-17"
+
+    statement {
+      sid = "AllowAPIGatewayAssume"
+
+      effect = "Allow"
+
+      actions = ["sts:AssumeRole"]
+      principals {
+        type  = "Service"
+        identifiers = ["apigateway.amazonaws.com"]
       }
     }
   }
@@ -110,7 +127,7 @@
         "dynamodb:GetItem",
         "dynamodb:PutItem",
         "dynamodb:UpdateItem",
-        "dynamodb:Query",
+        "dynamodb:Query"
       ]
 
       resources = [
@@ -153,7 +170,7 @@
       actions = [
         "dynamodb:BatchGetItem",
         "dynamodb:GetItem",
-        "dynamodb:Query",
+        "dynamodb:Query"
       ]
 
       resources = [

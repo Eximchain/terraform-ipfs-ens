@@ -31,6 +31,16 @@
     policy_arn = aws_iam_policy.dynamodb_nonce_table_read_write.arn
   }
 
+  resource "aws_iam_role_policy_attachment" "ipfs_ens_api_create_codepipeline" {
+    role       = aws_iam_role.ipfs_ens_lambda_iam.id
+    policy_arn = aws_iam_policy.codepipeline_create_delete_pipeline.arn
+  }
+
+  resource "aws_iam_role_policy_attachment" "ipfs_ens_api_pass_role" {
+    role       = aws_iam_role.ipfs_ens_lambda_iam.id
+    policy_arn = aws_iam_policy.iam_pass_role_to_codepipeline.arn
+  }
+
 # ---------------------------------------------------------------------------------------------------------------------
 # CODEPIPELINE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
@@ -71,3 +81,19 @@
     role       = aws_iam_role.ipfs_ens_codepipeline_iam.id
     policy_arn = aws_iam_policy.ecr_read_only.arn
   }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# API GATEWAY AUTHORIZER ROLE
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_iam_role" "ipfs_ens_gateway_authorizer" {
+  name = "ipfs-ens-gateway-authorizer-role-${var.subdomain}"
+
+  assume_role_policy = data.aws_iam_policy_document.api_gateway_assume_role.json
+
+  tags = local.default_tags
+}
+
+resource "aws_iam_role_policy_attachment" "ipfs_ens_gateway_authorizer_invoke" {
+  role = aws_iam_role.ipfs_ens_gateway_authorizer.id
+  policy_arn = aws_iam_policy.lambda_invoke.arn
+}

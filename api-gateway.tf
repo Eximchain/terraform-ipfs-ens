@@ -8,6 +8,16 @@
   }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# API GATEWAY CUSTOM AUTHORIZER
+# ---------------------------------------------------------------------------------------------------------------------
+  resource "aws_api_gateway_authorizer" "ipfs_ens_github_auth" {
+    name                   = "ipfs-ens-github-auth"
+    rest_api_id            = aws_api_gateway_rest_api.ipfs_ens_api.id
+    authorizer_uri         = aws_lambda_function.token_check_lambda.invoke_arn
+    authorizer_credentials = aws_iam_role.ipfs_ens_gateway_authorizer.arn
+  }
+
+# ---------------------------------------------------------------------------------------------------------------------
 # API GATEWAY: `/deployments/` API
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -22,7 +32,8 @@
     resource_id = aws_api_gateway_resource.ipfs_ens_deployments.id
     http_method = "GET"
 
-    authorization = "NONE"
+    authorization = "CUSTOM"
+    authorizer_id = aws_api_gateway_authorizer.ipfs_ens_github_auth.id
   }
 
   resource "aws_api_gateway_method_response" "ipfs_ens_deployments_get" {
@@ -67,7 +78,8 @@
     resource_id = aws_api_gateway_resource.ipfs_ens_deployments_proxy.id
     http_method = "ANY"
 
-    authorization = "NONE"
+    authorization = "CUSTOM"
+    authorizer_id = aws_api_gateway_authorizer.ipfs_ens_github_auth.id
 
     request_parameters = {
       "method.request.path.proxy" = true
@@ -730,6 +742,16 @@
     statement_id  = "AllowExecutionFromAPIGateway"
     action        = "lambda:InvokeFunction"
     function_name = aws_lambda_function.start_deploy_lambda.function_name
+    principal     = "apigateway.amazonaws.com"
+
+    # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
+    source_arn = local.api_gateway_source_arn
+  }
+
+  resource "aws_lambda_permission" "api_gateway_invoke_token_fetch_lambda" {
+    statement_id  = "AllowExecutionFromAPIGateway"
+    action        = "lambda:InvokeFunction"
+    function_name = aws_lambda_function.token_fetch_lambda.function_name
     principal     = "apigateway.amazonaws.com"
 
     # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
