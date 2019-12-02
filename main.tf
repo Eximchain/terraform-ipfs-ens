@@ -114,7 +114,8 @@ terraform {
       aws_lambda_function.ipfs_deploy_lambda.function_name,
       aws_lambda_function.ens_deploy_lambda.function_name,
       aws_lambda_function.token_fetch_lambda.function_name,
-      aws_lambda_function.token_check_lambda.function_name
+      aws_lambda_function.token_check_lambda.function_name,
+      aws_lambda_function.pipeline_transition_lambda.function_name
     ]
 
     npm_user  = var.npm_user
@@ -137,14 +138,15 @@ terraform {
 
     environment {
       variables = {
-        GITHUB_CLIENT_ID         = var.github_client_id
-        GITHUB_CLIENT_SECRET     = var.github_client_secret
-        DEPLOY_TABLE_NAME        = aws_dynamodb_table.deployments_table.id
-        ARTIFACT_BUCKET          = aws_s3_bucket.artifact_bucket.bucket
-        PIPELINE_ROLE_ARN        = aws_iam_role.ipfs_ens_codepipeline_iam.arn
-        CODEBUILD_BUILD_ID       = aws_codebuild_project.ipfs_builder.id
-        SERVICES_LAMBDA_FUNCTION = aws_lambda_function.ipfs_deploy_lambda.function_name
-        ENS_DEPLOY_QUEUE         = aws_sqs_queue.ens_deploy_queue.id
+        GITHUB_CLIENT_ID           = var.github_client_id
+        GITHUB_CLIENT_SECRET       = var.github_client_secret
+        DEPLOY_TABLE_NAME          = aws_dynamodb_table.deployments_table.id
+        ARTIFACT_BUCKET            = aws_s3_bucket.artifact_bucket.bucket
+        PIPELINE_ROLE_ARN          = aws_iam_role.ipfs_ens_codepipeline_iam.arn
+        CODEBUILD_BUILD_ID         = aws_codebuild_project.ipfs_builder.id
+        SERVICES_LAMBDA_FUNCTION   = aws_lambda_function.ipfs_deploy_lambda.function_name
+        TRANSITION_LAMBDA_FUNCTION = aws_lambda_function.pipeline_transition_lambda.function_name
+        ENS_DEPLOY_QUEUE           = aws_sqs_queue.ens_deploy_queue.id
       }
     }
 
@@ -271,6 +273,36 @@ terraform {
       variables = {
         GITHUB_CLIENT_ID      = var.github_client_id
         GITHUB_CLIENT_SECRET  = var.github_client_secret
+      }
+    }
+
+    depends_on = [null_resource.ipfs_ens_lambda_wait]
+
+    tags = local.default_tags
+
+    lifecycle {
+      ignore_changes = [
+        "source_code_hash",
+        "last_modified"
+      ]
+    }
+  }
+
+  resource "aws_lambda_function" "pipeline_transition_lambda" {
+    s3_bucket        = aws_s3_bucket.lambda_deployment_packages.bucket
+    s3_key           = aws_s3_bucket_object.default_function.key
+    function_name    = "pipeline-transition-lambda-${var.subdomain}"
+    role             = aws_iam_role.ipfs_ens_lambda_iam.arn
+    handler          = "index.pipelineTransitionHandler"
+    source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
+    runtime          = "nodejs10.x"
+    timeout          = 10
+
+    environment {
+      variables = {
+        GITHUB_CLIENT_ID      = var.github_client_id
+        GITHUB_CLIENT_SECRET  = var.github_client_secret
+        DEPLOY_TABLE_NAME     = aws_dynamodb_table.deployments_table.id
       }
     }
 
