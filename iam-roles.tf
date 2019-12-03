@@ -2,7 +2,7 @@
 # IPFS ENS LAMBDA ROLE
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_role" "ipfs_ens_lambda_iam" {
-    name = "ipfs-ens-lambda-iam-${var.subdomain}"
+    name = "ipfs-ens-lambda-iam-${local.sanitized_subdomain}"
 
     assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 
@@ -57,7 +57,7 @@
 # CODEPIPELINE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_role" "ipfs_ens_codepipeline_iam" {
-    name = "ipfs-ens-codepipeline-role-${var.subdomain}"
+    name = "ipfs-ens-codepipeline-role-${local.sanitized_subdomain}"
 
     assume_role_policy = data.aws_iam_policy_document.codepipeline_assume_role.json
 
@@ -98,7 +98,7 @@
 # API GATEWAY AUTHORIZER ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "ipfs_ens_gateway_authorizer" {
-  name = "ipfs-ens-gateway-authorizer-role-${var.subdomain}"
+  name = "ipfs-ens-gateway-authorizer-role-${local.sanitized_subdomain}"
 
   assume_role_policy = data.aws_iam_policy_document.api_gateway_assume_role.json
 

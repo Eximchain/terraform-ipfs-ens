@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
   resource "aws_api_gateway_rest_api" "ipfs_ens_api" {
-    name        = "ipfs-ens-${var.subdomain}"
+    name        = "ipfs-ens-${local.sanitized_subdomain}"
     description = "Proxy to handle requests to the IPFS-ENS Deploy API"
   }
 

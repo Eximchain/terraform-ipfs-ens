@@ -26,6 +26,9 @@ terraform {
     api_domain         = "${var.subdomain}.${var.root_domain}"
     provision_api_cert = var.existing_cert_domain == ""
 
+    // Remove invalid characters from names
+    sanitized_subdomain = replace(var.subdomain, ".", "-")
+
     alternate_api_cert_aliases = [local.deployment_website_dns]
     all_api_cert_aliases       = concat([local.api_domain], local.alternate_api_cert_aliases)
     api_cert_arn               = element(
@@ -100,7 +103,7 @@ terraform {
   module "dappbot_ipfs_ens_lambda_pipeline" {
     source = "git@github.com:Eximchain/terraform-aws-lambda-cd-pipeline.git"
 
-    id = "ipfs-ens-lambda-${var.subdomain}"
+    id = "ipfs-ens-lambda-${local.sanitized_subdomain}"
 
     github_lambda_repo    = "ipfs-ens-lambda"
     github_lambda_branch  = var.ipfs_ens_lambda_branch_override != "" ? var.ipfs_ens_lambda_branch_override : var.lambda_default_branch
@@ -129,7 +132,7 @@ terraform {
   resource "aws_lambda_function" "start_deploy_lambda" {
     s3_bucket        = aws_s3_bucket.lambda_deployment_packages.bucket
     s3_key           = aws_s3_bucket_object.default_function.key
-    function_name    = "ipfs-ens-start-deploy-lambda-${var.subdomain}"
+    function_name    = "ipfs-ens-start-deploy-lambda-${local.sanitized_subdomain}"
     role             = aws_iam_role.ipfs_ens_lambda_iam.arn
     handler          = "index.deployStartHandler"
     source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
@@ -165,7 +168,7 @@ terraform {
   resource "aws_lambda_function" "ipfs_deploy_lambda" {
     s3_bucket        = aws_s3_bucket.lambda_deployment_packages.bucket
     s3_key           = aws_s3_bucket_object.default_function.key
-    function_name    = "ipfs-deploy-lambda-${var.subdomain}"
+    function_name    = "ipfs-deploy-lambda-${local.sanitized_subdomain}"
     role             = aws_iam_role.ipfs_ens_lambda_iam.arn
     handler          = "index.deployIpfsHandler"
     source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
@@ -197,7 +200,7 @@ terraform {
   resource "aws_lambda_function" "ens_deploy_lambda" {
     s3_bucket        = aws_s3_bucket.lambda_deployment_packages.bucket
     s3_key           = aws_s3_bucket_object.default_function.key
-    function_name    = "ens-deploy-lambda-${var.subdomain}"
+    function_name    = "ens-deploy-lambda-${local.sanitized_subdomain}"
     role             = aws_iam_role.ipfs_ens_lambda_iam.arn
     handler          = "index.deployEnsHandler"
     source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
@@ -233,7 +236,7 @@ terraform {
   resource "aws_lambda_function" "token_fetch_lambda" {
     s3_bucket        = aws_s3_bucket.lambda_deployment_packages.bucket
     s3_key           = aws_s3_bucket_object.default_function.key
-    function_name    = "token-fetch-lambda-${var.subdomain}"
+    function_name    = "token-fetch-lambda-${local.sanitized_subdomain}"
     role             = aws_iam_role.ipfs_ens_lambda_iam.arn
     handler          = "index.tokenFetchHandler"
     source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
@@ -262,7 +265,7 @@ terraform {
   resource "aws_lambda_function" "token_check_lambda" {
     s3_bucket        = aws_s3_bucket.lambda_deployment_packages.bucket
     s3_key           = aws_s3_bucket_object.default_function.key
-    function_name    = "token-check-lambda-${var.subdomain}"
+    function_name    = "token-check-lambda-${local.sanitized_subdomain}"
     role             = aws_iam_role.ipfs_ens_lambda_iam.arn
     handler          = "index.tokenCheckHandler"
     source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
@@ -291,7 +294,7 @@ terraform {
   resource "aws_lambda_function" "pipeline_transition_lambda" {
     s3_bucket        = aws_s3_bucket.lambda_deployment_packages.bucket
     s3_key           = aws_s3_bucket_object.default_function.key
-    function_name    = "pipeline-transition-lambda-${var.subdomain}"
+    function_name    = "pipeline-transition-lambda-${local.sanitized_subdomain}"
     role             = aws_iam_role.ipfs_ens_lambda_iam.arn
     handler          = "index.pipelineTransitionHandler"
     source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
@@ -386,7 +389,7 @@ terraform {
 # SQS QUEUE
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_sqs_queue" "ens_deploy_queue" {
-    name                       = "ens-deploy-queue-${var.subdomain}"
+    name                       = "ens-deploy-queue-${local.sanitized_subdomain}"
     message_retention_seconds  = 3600
     visibility_timeout_seconds = 60
 
@@ -396,7 +399,7 @@ terraform {
   }
 
   resource "aws_sqs_queue" "ens_deploy_queue_deadletter" {
-    name                       = "ens-deploy-queue-deadletter-${var.subdomain}"
+    name                       = "ens-deploy-queue-deadletter-${local.sanitized_subdomain}"
     message_retention_seconds  = 1209600
     visibility_timeout_seconds = 30
 
@@ -479,7 +482,7 @@ terraform {
 # CODEBUILD PROJECT
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_codebuild_project" "ipfs_builder" {
-    name          = "ipfs-builder-${var.subdomain}"
+    name          = "ipfs-builder-${local.sanitized_subdomain}"
     build_timeout = 10
     service_role  = aws_iam_role.ipfs_ens_codepipeline_iam.arn
 

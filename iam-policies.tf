@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
   resource "aws_iam_policy" "lambda_allow_write_cloudwatch_logs" {
-    name = "lambda-allow-write-logs-${var.subdomain}"
+    name = "lambda-allow-write-logs-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.lambda_allow_write_cloudwatch_logs.json
   }
@@ -95,7 +95,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
   resource "aws_iam_policy" "dynamodb_deployments_table_read_write" {
-    name = "dynamodb-deployments-table-read-write-${var.subdomain}"
+    name = "dynamodb-deployments-table-read-write-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.dynamodb_deployments_table_read_write.json
   }
@@ -142,7 +142,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
   resource "aws_iam_policy" "dynamodb_deployments_table_read_only" {
-    name = "dynamodb-deployments-table-read-only-${var.subdomain}"
+    name = "dynamodb-deployments-table-read-only-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.dynamodb_deployments_table_read_only.json
   }
@@ -185,7 +185,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
   resource "aws_iam_policy" "dynamodb_users_table_read_write" {
-    name = "dynamodb-users-table-read-write-${var.subdomain}"
+    name = "dynamodb-users-table-read-write-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.dynamodb_users_table_read_write.json
   }
@@ -232,7 +232,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
   resource "aws_iam_policy" "dynamodb_users_table_read_only" {
-    name = "dynamodb-users-table-read-only-${var.subdomain}"
+    name = "dynamodb-users-table-read-only-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.dynamodb_users_table_read_only.json
   }
@@ -275,7 +275,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
   resource "aws_iam_policy" "dynamodb_nonce_table_read_write" {
-    name = "dynamodb-nonce-table-read-write-${var.subdomain}"
+    name = "dynamodb-nonce-table-read-write-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.dynamodb_nonce_table_read_write.json
   }
@@ -322,7 +322,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
   resource "aws_iam_policy" "dynamodb_nonce_table_read_only" {
-    name = "dynamodb-nonce-table-read-only-${var.subdomain}"
+    name = "dynamodb-nonce-table-read-only-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.dynamodb_nonce_table_read_only.json
   }
@@ -364,7 +364,7 @@
 # SQS SEND MESSAGES
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "sqs_send_message_ipfs_ens" {
-    name = "sqs-send-message-ipfs-ens-${var.subdomain}"
+    name = "sqs-send-message-ipfs-ens-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.sqs_send_message_ipfs_ens.json
   }
@@ -389,7 +389,7 @@
 # SQS CONSUME MESSAGES
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "sqs_consume_message_ipfs_ens" {
-    name = "sqs-consume-message-ipfs-ens-${var.subdomain}"
+    name = "sqs-consume-message-ipfs-ens-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.sqs_consume_message_ipfs_ens.json
   }
@@ -419,7 +419,7 @@
 # S3 MANAGE DEPLOYMENT SEEDS AND ARTIFACT BUCKETS
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "manage_s3_pipeline_src_and_artifacts" {
-    name = "s3-manage-pipeline-src-artifacts-${var.subdomain}"
+    name = "s3-manage-pipeline-src-artifacts-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.manage_s3_pipeline_src_and_artifacts.json
   }
@@ -474,7 +474,7 @@
 # CODEPIPELINE CREATE/DELETE PIPELINE
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "codepipeline_create_delete_pipeline" {
-    name = "codepipeline-create-delete-pipeline-${var.subdomain}"
+    name = "codepipeline-create-delete-pipeline-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.codepipeline_create_delete_pipeline.json
   }
@@ -499,7 +499,7 @@
 # CODEPIPELINE PUT JOB RESULT
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "codepipeline_put_job_result" {
-    name = "codepipeline-put-job-result-${var.subdomain}"
+    name = "codepipeline-put-job-result-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.codepipeline_put_job_result.json
   }
@@ -524,7 +524,7 @@
 # IAM PASS ROLE TO CODEPIPELINE
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "iam_pass_role_to_codepipeline" {
-    name = "iam-pass-role-codepipeline-${var.subdomain}"
+    name = "iam-pass-role-codepipeline-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.iam_pass_role_to_codepipeline.json
   }
@@ -549,7 +549,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
   // TODO fix this policy
   resource "aws_iam_policy" "codepipeline_policy" {
-    name = "ipfs-ens-codepipeline-policy-${var.subdomain}"
+    name = "ipfs-ens-codepipeline-policy-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.codepipeline_policy.json
   }
@@ -628,7 +628,7 @@
 # S3 FULL ACCESS MANAGED BUCKETS
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "s3_full_access_managed_buckets" {
-    name = "s3-full-access-${var.subdomain}"
+    name = "s3-full-access-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.s3_full_access_managed_buckets.json
   }
@@ -656,7 +656,7 @@
 # CODEBUILD BUILD START
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "codebuild_build_part" {
-    name = "codebuild-build-part-${var.subdomain}"
+    name = "codebuild-build-part-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.codebuild_build_part.json
   }
@@ -682,7 +682,7 @@
 # LAMBDA INVOKE
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "lambda_invoke" {
-    name = "lambda-invoke-${var.subdomain}"
+    name = "lambda-invoke-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.lambda_invoke.json
   }
@@ -714,7 +714,7 @@
 # ECR READ ONLY
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "ecr_read_only" {
-    name = "ecr-read-only-${var.subdomain}"
+    name = "ecr-read-only-${local.sanitized_subdomain}"
 
     policy = data.aws_iam_policy_document.ecr_read_only.json
   }
