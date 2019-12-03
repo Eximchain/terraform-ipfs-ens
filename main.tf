@@ -159,8 +159,8 @@ terraform {
 
     lifecycle {
       ignore_changes = [
-        "source_code_hash",
-        "last_modified"
+        source_code_hash,
+        last_modified
       ]
     }
   }
@@ -191,8 +191,8 @@ terraform {
 
     lifecycle {
       ignore_changes = [
-        "source_code_hash",
-        "last_modified"
+        source_code_hash,
+        last_modified
       ]
     }
   }
@@ -227,8 +227,8 @@ terraform {
 
     lifecycle {
       ignore_changes = [
-        "source_code_hash",
-        "last_modified"
+        source_code_hash,
+        last_modified
       ]
     }
   }
@@ -256,8 +256,8 @@ terraform {
 
     lifecycle {
       ignore_changes = [
-        "source_code_hash",
-        "last_modified"
+        source_code_hash,
+        last_modified
       ]
     }
   }
@@ -285,8 +285,8 @@ terraform {
 
     lifecycle {
       ignore_changes = [
-        "source_code_hash",
-        "last_modified"
+        source_code_hash,
+        last_modified
       ]
     }
   }
@@ -315,8 +315,8 @@ terraform {
 
     lifecycle {
       ignore_changes = [
-        "source_code_hash",
-        "last_modified"
+        source_code_hash,
+        last_modified
       ]
     }
   }
@@ -376,8 +376,8 @@ terraform {
   }
 
   resource "aws_dynamodb_table_item" "current_nonce" {
-    table_name = "${aws_dynamodb_table.nonce_table.name}"
-    hash_key   = "${aws_dynamodb_table.nonce_table.hash_key}"
+    table_name = aws_dynamodb_table.nonce_table.name
+    hash_key   = aws_dynamodb_table.nonce_table.hash_key
 
     item = jsonencode({
         "Chain"={"S"="Ethereum"}
