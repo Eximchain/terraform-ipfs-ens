@@ -31,9 +31,15 @@
     policy_arn = aws_iam_policy.dynamodb_nonce_table_read_write.arn
   }
 
+  # CodePipeline
   resource "aws_iam_role_policy_attachment" "ipfs_ens_api_create_codepipeline" {
     role       = aws_iam_role.ipfs_ens_lambda_iam.id
     policy_arn = aws_iam_policy.codepipeline_create_delete_pipeline.arn
+  }
+
+  resource "aws_iam_role_policy_attachment" "ipfs_ens_api_put_codepipeline_result" {
+    role       = aws_iam_role.ipfs_ens_lambda_iam.id
+    policy_arn = aws_iam_policy.codepipeline_put_job_result.arn
   }
 
   resource "aws_iam_role_policy_attachment" "ipfs_ens_api_pass_role" {
