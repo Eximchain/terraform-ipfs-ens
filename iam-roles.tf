@@ -31,6 +31,12 @@
     policy_arn = aws_iam_policy.dynamodb_nonce_table_read_write.arn
   }
 
+  #S3
+  resource "aws_iam_role_policy_attachment" "ipfs_ens_api_manage_s3" {
+    role       = aws_iam_role.ipfs_ens_lambda_iam.id
+    policy_arn = aws_iam_policy.manage_s3_pipeline_src_and_artifacts.arn
+  }
+
   # CodePipeline
   resource "aws_iam_role_policy_attachment" "ipfs_ens_api_create_codepipeline" {
     role       = aws_iam_role.ipfs_ens_lambda_iam.id
