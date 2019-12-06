@@ -128,10 +128,10 @@
     path_part   = "login"
   }
 
-  resource "aws_api_gateway_method" "ipfs_ens_login_post" {
+  resource "aws_api_gateway_method" "ipfs_ens_login_any" {
     rest_api_id = aws_api_gateway_rest_api.ipfs_ens_api.id
     resource_id = aws_api_gateway_resource.ipfs_ens_login.id
-    http_method = "POST"
+    http_method = "ANY"
 
     authorization = "NONE"
 
@@ -140,22 +140,22 @@
     }
   }
 
-  resource "aws_api_gateway_method_response" "ipfs_ens_login_post" {
+  resource "aws_api_gateway_method_response" "ipfs_ens_login_any" {
     rest_api_id = aws_api_gateway_rest_api.ipfs_ens_api.id
     resource_id = aws_api_gateway_resource.ipfs_ens_login.id
-    http_method = aws_api_gateway_method.ipfs_ens_login_post.http_method
+    http_method = aws_api_gateway_method.ipfs_ens_login_any.http_method
     status_code = "200"
     response_parameters = {
       "method.response.header.Access-Control-Allow-Origin" = true
     }
 
-    depends_on = [aws_api_gateway_method.ipfs_ens_login_post]
+    depends_on = [aws_api_gateway_method.ipfs_ens_login_any]
   }
 
-  resource "aws_api_gateway_integration" "ipfs_ens_login_post" {
+  resource "aws_api_gateway_integration" "ipfs_ens_login_any" {
     rest_api_id = aws_api_gateway_rest_api.ipfs_ens_api.id
     resource_id = aws_api_gateway_resource.ipfs_ens_login.id
-    http_method = aws_api_gateway_method.ipfs_ens_login_post.http_method
+    http_method = aws_api_gateway_method.ipfs_ens_login_any.http_method
 
     integration_http_method = "POST"
     type                    = "AWS_PROXY"
@@ -166,7 +166,7 @@
     }
 
     depends_on = [
-      aws_api_gateway_method.ipfs_ens_login_post,
+      aws_api_gateway_method.ipfs_ens_login_any,
       aws_lambda_function.token_fetch_lambda
     ]
   }
