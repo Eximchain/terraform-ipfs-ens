@@ -15,6 +15,8 @@
     policy_arn = aws_iam_policy.lambda_allow_write_cloudwatch_logs.arn
   }
 
+  # Cloudwatch (Trigger)
+
   # DynamoDB
   resource "aws_iam_role_policy_attachment" "ipfs_ens_api_dynamodb_deployments" {
     role       = aws_iam_role.ipfs_ens_lambda_iam.id

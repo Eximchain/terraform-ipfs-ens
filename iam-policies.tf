@@ -471,7 +471,7 @@
   }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# CODEPIPELINE CREATE/DELETE PIPELINE
+# CODEPIPELINE CREATE/READ/DELETE PIPELINE
 # ---------------------------------------------------------------------------------------------------------------------
   resource "aws_iam_policy" "codepipeline_create_delete_pipeline" {
     name = "codepipeline-create-delete-pipeline-${local.sanitized_subdomain}"
@@ -490,6 +490,7 @@
       actions = [
         "codepipeline:CreatePipeline",
         "codepipeline:DeletePipeline",
+        "codepipeline:ListActionExecutions"
       ]
       resources = ["*"]
     }
