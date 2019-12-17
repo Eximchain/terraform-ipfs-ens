@@ -336,6 +336,13 @@ terraform {
       projection_type = "ALL"
     }
 
+    global_secondary_index {
+      name     = "CodepipelineNameIndex"
+      hash_key = "CodepipelineName"
+
+      projection_type = "ALL"
+    }
+
     attribute {
       name = "EnsName"
       type = "S"
@@ -343,6 +350,11 @@ terraform {
 
     attribute {
       name = "Username"
+      type = "S"
+    }
+
+    attribute {
+      name = "CodepipelineName"
       type = "S"
     }
 
@@ -501,4 +513,40 @@ terraform {
       type      = "CODEPIPELINE"
       buildspec = file("${path.module}/buildspec.yml")
     }
+  }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# CLOUDWATCH TRANSITION CONFIG
+# ---------------------------------------------------------------------------------------------------------------------
+
+  // Details on CloudWatch events emitted by CodePipeline: https://docs.aws.amazon.com/codepipeline/latest/userguide/detect-state-changes-cloudwatch-events.html
+  // Details on writing CloudWatch event patterns: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/CloudWatchEventsandEventPatterns.html
+  resource "aws_cloudwatch_event_rule" "pipeline_transition_lambda" {
+    name = "ipfs-pipeline-transition-${local.sanitized_subdomain}"
+    event_pattern = <<PATTERN
+      {
+        "source": ["aws.codepipeline"],
+        "detail-type": [
+          "CodePipeline Stage Execution State Change"
+        ],
+        "detail": {
+          "state": [ "SUCCEEDED", "FAILED" ],
+          "stage": [ "source", "build" ]
+        }
+      }
+    PATTERN
+  }
+
+  resource "aws_cloudwatch_event_target" "pipeline_transition_lambda" {
+    rule = "${aws_cloudwatch_event_rule.pipeline_transition_lambda.name}"
+    arn  = "${aws_lambda_function.pipeline_transition_lambda.arn}"
+  }
+
+  resource "aws_lambda_permission" "pipeline_transition_lambda" {
+    statement_id = "AllowExecutionFromCloudWatch"
+    action = "lambda:InvokeFunction"
+    function_name = aws_lambda_function.pipeline_transition_lambda.function_name
+    principal = "events.amazonaws.com"
+
+    source_arn = aws_cloudwatch_event_rule.pipeline_transition_lambda.arn
   }
