@@ -13,5 +13,6 @@ phases:
       - cd ..
 artifacts:
   name: BUILD
+  base-directory: $BUILD_DIR
   files:
-    - ipfs-deployable.zip
+    - '**/*'
