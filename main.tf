@@ -173,7 +173,7 @@ terraform {
     handler          = "index.deployIpfsHandler"
     source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
     runtime          = "nodejs10.x"
-    timeout          = 10
+    timeout          = 60
 
     environment {
       variables = {
