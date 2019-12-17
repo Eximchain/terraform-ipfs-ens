@@ -8,9 +8,9 @@ phases:
       - cd $PACKAGE_DIR
       - npm install
       - npm run build
-      - cd $BUILD_DIR
-      - zip -r ../ipfs-deployable.zip *
-      - cd ..
+      # - cd $BUILD_DIR
+      # - zip -r ../ipfs-deployable.zip *
+      # - cd ..
 artifacts:
   name: BUILD
   base-directory: $BUILD_DIR
