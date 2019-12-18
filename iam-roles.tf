@@ -53,6 +53,17 @@
     policy_arn = aws_iam_policy.iam_pass_role_to_codepipeline.arn
   }
 
+  # SQS Send & Consume Messages
+  resource "aws_iam_role_policy_attachment" "sqs_send_message_ipfs_ens" {
+    role       = aws_iam_role.ipfs_ens_lambda_iam.id
+    policy_arn = aws_iam_policy.sqs_send_message_ipfs_ens.arn
+  }
+
+  resource "aws_iam_role_policy_attachment" "sqs_consume_message_ipfs_ens" {
+    role       = aws_iam_role.ipfs_ens_lambda_iam.id
+    policy_arn = aws_iam_policy.sqs_consume_message_ipfs_ens.arn
+  }
+
 # ---------------------------------------------------------------------------------------------------------------------
 # CODEPIPELINE IAM ROLE
 # ---------------------------------------------------------------------------------------------------------------------

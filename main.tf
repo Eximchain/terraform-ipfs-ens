@@ -174,6 +174,7 @@ terraform {
     source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
     runtime          = "nodejs10.x"
     timeout          = 600
+    memory_size      = 512
 
     environment {
       variables = {
@@ -416,6 +417,16 @@ terraform {
     visibility_timeout_seconds = 30
 
     tags = local.default_tags
+  }
+
+  resource "aws_lambda_event_source_mapping" "ens_deploy_queue" {
+    event_source_arn = "${aws_sqs_queue.ens_deploy_queue.arn}"
+    function_name    = "${aws_lambda_function.ens_deploy_lambda.arn}"
+  }
+
+  resource "aws_lambda_event_source_mapping" "ens_deploy_queue_deadletter" {
+    event_source_arn = "${aws_sqs_queue.ens_deploy_queue_deadletter.arn}"
+    function_name    = "${aws_lambda_function.ens_deploy_lambda.arn}"
   }
 
 # ---------------------------------------------------------------------------------------------------------------------
