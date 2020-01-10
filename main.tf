@@ -199,14 +199,15 @@ terraform {
   }
 
   resource "aws_lambda_function" "ens_deploy_lambda" {
-    s3_bucket        = aws_s3_bucket.lambda_deployment_packages.bucket
-    s3_key           = aws_s3_bucket_object.default_function.key
-    function_name    = "ens-deploy-lambda-${local.sanitized_subdomain}"
-    role             = aws_iam_role.ipfs_ens_lambda_iam.arn
-    handler          = "index.deployEnsHandler"
-    source_code_hash = filebase64sha256(aws_s3_bucket_object.default_function.source)
-    runtime          = "nodejs10.x"
-    timeout          = 10
+    s3_bucket                      = aws_s3_bucket.lambda_deployment_packages.bucket
+    s3_key                         = aws_s3_bucket_object.default_function.key
+    function_name                  = "ens-deploy-lambda-${local.sanitized_subdomain}"
+    role                           = aws_iam_role.ipfs_ens_lambda_iam.arn
+    handler                        = "index.deployEnsHandler"
+    source_code_hash               = filebase64sha256(aws_s3_bucket_object.default_function.source)
+    runtime                        = "nodejs10.x"
+    timeout                        = 120
+    reserved_concurrent_executions = 1
 
     environment {
       variables = {
