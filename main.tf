@@ -405,7 +405,7 @@ terraform {
   resource "aws_sqs_queue" "ens_deploy_queue" {
     name                       = "ens-deploy-queue-${local.sanitized_subdomain}"
     message_retention_seconds  = 3600
-    visibility_timeout_seconds = 60
+    visibility_timeout_seconds = 120
 
     redrive_policy = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.ens_deploy_queue_deadletter.arn}\",\"maxReceiveCount\":3}"
 
@@ -415,7 +415,7 @@ terraform {
   resource "aws_sqs_queue" "ens_deploy_queue_deadletter" {
     name                       = "ens-deploy-queue-deadletter-${local.sanitized_subdomain}"
     message_retention_seconds  = 1209600
-    visibility_timeout_seconds = 30
+    visibility_timeout_seconds = 120
 
     tags = local.default_tags
   }
@@ -425,6 +425,8 @@ terraform {
     function_name    = "${aws_lambda_function.ens_deploy_lambda.arn}"
   }
 
+  // TODO: Separate deadletter processor function
+  // The main processor is gated to one at a time, but the deadletter processor doesn't need to be
   resource "aws_lambda_event_source_mapping" "ens_deploy_queue_deadletter" {
     event_source_arn = "${aws_sqs_queue.ens_deploy_queue_deadletter.arn}"
     function_name    = "${aws_lambda_function.ens_deploy_lambda.arn}"
