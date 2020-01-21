@@ -7,11 +7,13 @@ phases:
     commands:
       - cd $PACKAGE_DIR
       - npm install
+      # The magic command below uses jq to merge the existing package.json
+      # with an object containing the correct homepage key
+      - "cat package.json | jq '. |= . + { \"homepage\": \"./\" }' > tmp-package.json"
+      - mv tmp-package.json package.json
       - npm run build
-      - cd $BUILD_DIR
-      - zip -r ../ipfs-deployable.zip *
-      - cd ..
 artifacts:
   name: BUILD
+  base-directory: $BUILD_DIR
   files:
-    - ipfs-deployable.zip
+    - '**/*'
