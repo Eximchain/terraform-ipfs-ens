@@ -4,14 +4,10 @@
 
 variable "github_client_id" {
   description = "Client ID for GitHub OAuth app; publicly visible"
-  // TODO: Remove default once we have a value
-  default = ""
 }
 
 variable "github_client_secret" {
   description = "Client secret for GitHub OAuth app; secret, server-only"
-  // TODO: Remove default once we have a value
-  default = ""
 }
 
 variable "eth_key" {
