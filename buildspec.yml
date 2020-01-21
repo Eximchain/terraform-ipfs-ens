@@ -3,17 +3,12 @@ phases:
   install:
     runtime-versions:
       nodejs: 10
-  pre_build:
-    commands:
-      - apt update
-      - apt install jq
   build:
     commands:
       - cd $PACKAGE_DIR
       - npm install
-      - "cat package.json | jq \". |= . + { \"homepage\": \"./\" }\" > tmp-package.json"
+      - "cat package.json | jq '. |= . + { \"homepage\": \"./\" }' > tmp-package.json"
       - mv tmp-package.json package.json
-      - rm tmp-package.json
       - npm run build
 artifacts:
   name: BUILD
