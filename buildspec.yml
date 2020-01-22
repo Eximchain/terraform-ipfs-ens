@@ -11,6 +11,16 @@ phases:
       # with an object containing the correct homepage key
       - "cat package.json | jq '. |= . + { \"homepage\": \"./\" }' > tmp-package.json"
       - mv tmp-package.json package.json
+      - |
+        cat > build-env.sh << "EOF"
+        touch .env
+        IFS=',' read -ra LINES <<< "$ENV_VARS"
+        for line in "${LINES[@]}"; do
+          echo $line >> .env
+        done
+        EOF
+      - bash build-env.sh
+      - rm build-env.sh
       - npm run build
 artifacts:
   name: BUILD
